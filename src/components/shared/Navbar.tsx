@@ -52,15 +52,12 @@ const Navbar = () => {
           >
             Sign In
           </Link>
-          <Button
-            size='lg'
-            className='bg-indigo-500 px-5 font-semibold text-white hover:bg-indigo-500/90'
-          >
+          <Button className='bg-indigo-500 px-5 font-semibold text-white hover:bg-indigo-500/90'>
             Get Started
           </Button>
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile nav (shadcn Sheet) */}
         <div className='flex items-center md:hidden'>
           <Sheet>
             <SheetTrigger
