@@ -16,6 +16,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Logo from '@/images/logo.png'
+import { authClient } from '@/lib/auth-client'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 type SignInFields = {
   email: string
@@ -34,14 +37,14 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
-
+  const router = useRouter()
   function updateField(field: keyof SignInFields, value: string) {
     setFields((current) => ({ ...current, [field]: value }))
     setErrors((current) => ({ ...current, [field]: undefined }))
     setStatusMessage('')
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const nextErrors: SignInErrors = {}
@@ -57,13 +60,26 @@ export default function SignInPage() {
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) return
 
-    setIsLoading(true)
-    window.setTimeout(() => {
+    try {
+      setIsLoading(true)
+      const { data, error } = await authClient.signIn.email({
+        email: fields.email,
+        password: fields.password,
+      })
+      if (error) {
+        toast.error(error.message || 'Invalid email or password.')
+        return
+      }
+
+      toast.success(`Welcome back ${data.user.name}!`)
+      router.push('/')
+      router.refresh()
+    } catch (error) {
+      console.log(error)
+      toast.error('Something went wrong. Please try again.')
+    } finally {
       setIsLoading(false)
-      setStatusMessage(
-        'Sign-in is not connected yet. Your account details were not sent.',
-      )
-    }, 650)
+    }
   }
 
   return (
@@ -147,7 +163,9 @@ export default function SignInPage() {
                   />
                   <button
                     type='button'
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
                     aria-pressed={showPassword}
                     onClick={() => setShowPassword((visible) => !visible)}
                     className='absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'

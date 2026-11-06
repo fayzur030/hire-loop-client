@@ -16,6 +16,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Logo from '@/images/logo.png'
+import { authClient } from '@/lib/auth-client'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 type AccountRole = 'seeker' | 'recruiter'
 type FormFields = {
@@ -24,6 +27,7 @@ type FormFields = {
   password: string
   confirmPassword: string
   profileImageUrl: string
+  role: string
 }
 type FormErrors = Partial<Record<keyof FormFields, string>>
 
@@ -33,6 +37,7 @@ const INITIAL_FIELDS: FormFields = {
   password: '',
   confirmPassword: '',
   profileImageUrl: '',
+  role: '',
 }
 
 const ROLES: {
@@ -63,14 +68,14 @@ export default function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
-
+  const router = useRouter()
   function updateField(field: keyof FormFields, value: string) {
     setFields((current) => ({ ...current, [field]: value }))
     setErrors((current) => ({ ...current, [field]: undefined }))
     setStatusMessage('')
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const nextErrors: FormErrors = {}
     if (!fields.fullName.trim()) nextErrors.fullName = 'Enter your full name.'
@@ -95,15 +100,29 @@ export default function SignUpPage() {
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) return
 
-    const signupData = { ...fields, role }
-    console.log(signupData, 'form data')
-    setIsLoading(true)
-    window.setTimeout(() => {
+    try {
+      setIsLoading(true)
+      const { data, error } = await authClient.signUp.email({
+        name: fields.fullName,
+        email: fields.email.trim(),
+        password: fields.password,
+        image: fields.profileImageUrl,
+        role: role,
+      })
+      console.log(data)
+      if (error) {
+        toast.error(error.message || 'Failed to create account.')
+        return
+      }
+      toast.success('Account created successfully!')
+      router.push('/sign-in')
+      router.refresh()
+    } catch (error) {
+      console.log(error)
+      toast.error('Something went wrong. Please try again.')
+    } finally {
       setIsLoading(false)
-      setStatusMessage(
-        `Your ${signupData.role === 'seeker' ? 'job seeker' : 'recruiter'} details are ready. Account creation is not connected yet.`
-      )
-    }, 650)
+    }
   }
 
   return (
@@ -142,10 +161,10 @@ export default function SignUpPage() {
                       type='button'
                       aria-pressed={selected}
                       onClick={() => setRole(value)}
-                      className={`group relative flex min-h-[112px] items-start gap-3 rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                      className={`group relative flex min-h-28 items-start gap-3 rounded-xl border p-4 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                         selected
                           ? 'border-primary bg-primary/10 shadow-lg shadow-primary/10'
-                          : 'border-border bg-background/40 hover:border-muted-foreground/50 hover:bg-foreground/[0.03]'
+                          : 'border-border bg-background/40 hover:border-muted-foreground/50 hover:bg-foreground/3'
                       }`}
                     >
                       <span
@@ -155,7 +174,7 @@ export default function SignUpPage() {
                             : 'bg-muted text-muted-foreground'
                         }`}
                       >
-                        <Icon className='size-[18px]' />
+                        <Icon className='size-4.5' />
                       </span>
                       <span className='min-w-0'>
                         <span className='block text-sm font-medium'>
