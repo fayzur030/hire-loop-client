@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html
       lang='en'
-      className={`${manrope.variable} ${inter.variable} h-full antialiased`}
+      className={`dark ${manrope.variable} ${inter.variable} h-full antialiased`}
     >
       <body className='min-h-full flex flex-col'>{children}</body>
     </html>
