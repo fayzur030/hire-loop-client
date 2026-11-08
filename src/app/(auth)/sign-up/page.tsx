@@ -9,6 +9,7 @@ import {
   Eye,
   EyeOff,
   LoaderCircle,
+  ShieldCheck,
   UserRound,
 } from 'lucide-react'
 
@@ -20,7 +21,7 @@ import { authClient } from '@/lib/auth-client'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-type AccountRole = 'seeker' | 'recruiter'
+type AccountRole = 'seeker' | 'recruiter' | 'admin'
 type FormFields = {
   fullName: string
   email: string
@@ -57,6 +58,12 @@ const ROLES: {
     title: 'Recruiter',
     description: 'Find talented people and hire the right candidates.',
     Icon: Building2,
+  },
+  {
+    value: 'admin',
+    title: 'Admin',
+    description: 'Manage users, monitor activities, and maintain the platform.',
+    Icon: ShieldCheck,
   },
 ]
 
@@ -114,7 +121,7 @@ export default function SignUpPage() {
         toast.error(error.message || 'Failed to create account.')
         return
       }
-      toast.success('Account created successfully!')
+      toast.success('Account created successfully! Please sign in.')
       router.push('/sign-in')
       router.refresh()
     } catch (error) {

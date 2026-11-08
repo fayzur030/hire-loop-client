@@ -19,14 +19,19 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import NavAuth from './NavAuth'
-
-const NAV_LINKS = [
-  { label: 'Browse Jobs', href: '/jobs' },
-  { label: 'Company', href: '/companies' },
-  { label: 'Pricing', href: '/pricing' },
-]
+import { authClient } from '@/lib/auth-client'
 
 const Navbar = () => {
+  const { data: session } = authClient.useSession()
+  const NAV_LINKS = [
+    { label: 'Browse Jobs', href: '/jobs' },
+    { label: 'Company', href: '/companies' },
+    { label: 'Pricing', href: '/pricing' },
+    {
+      label: 'Dashboard',
+      href: `/dashboard/${session?.user?.role || 'seeker'}`,
+    },
+  ]
   const pathname = usePathname()
   const router = useRouter()
 
