@@ -41,11 +41,27 @@ const INITIAL_FORM: JobFormData = {
 
 const JOB_CATEGORIES = [
   'Engineering & Tech',
-  'Design',
-  'Product',
+  'Frontend Development',
+  'Backend Development',
+  'Full Stack Development',
+  'Mobile App Development',
+  'UI/UX Design',
+  'Graphic Design',
+  'Product Management',
+  'Project Management',
   'Marketing',
-  'Infrastructure',
-  'Quality',
+  'Digital Marketing',
+  'Sales & Business Development',
+  'Human Resources',
+  'Finance & Accounting',
+  'Customer Support',
+  'Data Science & Analytics',
+  'DevOps & Infrastructure',
+  'Cybersecurity',
+  'Quality Assurance',
+  'Content Writing',
+  'Education & Training',
+  'Other',
 ]
 
 const JOB_TYPES: JobType[] = [
@@ -113,13 +129,9 @@ export default function NewJobPage() {
 
   return (
     <div className='flex justify-center items-center px-4 py-8 sm:px-6 lg:py-12'>
-      <div className='w-full max-w-4xl lg:w-6xl'>
+      <div className='w-full max-w-4xl lg:w-7xl'>
         {/* Header — centered */}
         <header className='mb-8 items-center text-start sm:mb-10'>
-          <div className='mb-5 flex size-14 items-center justify-center rounded-2xl border border-[#6366F1]/20 bg-[#6366F1]/10 text-[#818CF8]'>
-            <BriefcaseBusiness className='size-7' />
-          </div>
-
           <h1 className='text-2xl font-bold tracking-tight text-white sm:text-3xl'>
             Post a New Job
           </h1>

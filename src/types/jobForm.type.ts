@@ -1,6 +1,7 @@
 type JobType = 'full-time' | 'part-time' | 'contract' | 'internship'
 
 export interface JobFormData {
+  _id: string
   title: string
   companyName: string
   category: string
