@@ -14,11 +14,11 @@ import {
   SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import NavAuth from './NavAuth'
 
 const NAV_LINKS = [
   { label: 'Browse Jobs', href: '/jobs' },
@@ -68,30 +68,7 @@ const Navbar = () => {
 
             <Separator orientation='vertical' className='bg-zinc-700' />
 
-            <Link href='/sign-in'>
-              <Button
-                variant='ghost'
-                className={`h-11 rounded-lg px-5 text-base font-semibold ${
-                  pathname === '/sign-in'
-                    ? 'text-indigo-400'
-                    : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'
-                }`}
-              >
-                Sign In
-              </Button>
-            </Link>
-
-            <Link href='/sign-up'>
-              <Button
-                className={`h-11 rounded-lg px-6 text-base font-semibold text-white ${
-                  pathname === '/sign-up'
-                    ? 'bg-indigo-600'
-                    : 'bg-indigo-500 hover:bg-indigo-500/90'
-                }`}
-              >
-                Get Started
-              </Button>
-            </Link>
+            <NavAuth />
           </div>
 
           {/* Mobile Navigation */}
@@ -149,42 +126,12 @@ const Navbar = () => {
                       />
                     )
                   })}
+
+                  {/* Auth Buttons */}
+                  <div className='mt-4 flex flex-col gap-3 border-t border-zinc-800 pt-4'>
+                    <NavAuth mobile />
+                  </div>
                 </nav>
-
-                {/* Mobile Buttons */}
-                <SheetFooter className='flex flex-col gap-3'>
-                  <SheetClose
-                    render={
-                      <button
-                        type='button'
-                        onClick={() => router.push('/sign-in')}
-                        className={`h-11 w-full rounded-lg border border-zinc-700 bg-transparent text-sm font-medium transition-colors hover:bg-zinc-800 ${
-                          pathname === '/sign-in'
-                            ? 'border-indigo-500 text-indigo-400'
-                            : 'text-zinc-300 hover:text-white'
-                        }`}
-                      >
-                        Sign In
-                      </button>
-                    }
-                  />
-
-                  <SheetClose
-                    render={
-                      <button
-                        type='button'
-                        onClick={() => router.push('/sign-up')}
-                        className={`h-11 w-full rounded-lg text-sm font-semibold text-white transition-colors ${
-                          pathname === '/sign-up'
-                            ? 'bg-indigo-600'
-                            : 'bg-indigo-500 hover:bg-indigo-500/90'
-                        }`}
-                      >
-                        Get Started
-                      </button>
-                    }
-                  />
-                </SheetFooter>
               </SheetContent>
             </Sheet>
           </div>
