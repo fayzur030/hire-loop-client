@@ -17,23 +17,11 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 
 import { BriefcaseBusiness, Globe2, Wallet } from 'lucide-react'
+import { JobFormData } from '@/types/jobForm.type'
+import { createJob } from '@/lib/actions/jobs'
+import { toast } from 'sonner'
 
 type JobType = 'full-time' | 'part-time' | 'contract' | 'internship'
-
-export type JobFormData = {
-  title: string
-  companyName: string
-  category: string
-  jobType: JobType
-  isRemote: boolean
-  location: string
-  deadline: string
-  minSalary: string
-  maxSalary: string
-  salaryFrequency: string
-  responsibilities: string
-  requirements: string
-}
 
 /** Single source of truth — extend this object when adding a new field. */
 const INITIAL_FORM: JobFormData = {
@@ -104,12 +92,17 @@ export default function NewJobPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSubmitting(true)
-
     try {
-      // `form` is already a clean JobFormData object — just send it.
-      console.log('New job form data:', form)
-      // TODO: await createJob(form)
-      setForm(INITIAL_FORM)
+      const addJob = await createJob(form)
+      if (addJob) {
+        toast.success('Job posted successfully!')
+        setForm(INITIAL_FORM)
+      } else {
+        toast.error('Failed to post job. Please try again.')
+      }
+    } catch (error) {
+      console.error('Create job error:', error)
+      toast.error('An error occurred while posting the job. Please try again.')
     } finally {
       setSubmitting(false)
     }
