@@ -19,6 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import UpdateJobDialog from '../_Components/UpdateJobDialog'
 
 const cardClass =
   'overflow-hidden rounded-2xl border border-[#27272A] bg-[#111113] shadow-sm'
@@ -216,14 +217,8 @@ export default async function ManageJobsPage() {
                       <span className={mobileLabelClass}>Actions</span>
                       <div className='flex items-center justify-end gap-1.5'>
                         {/* Update */}
-                        <Button
-                          type='button'
-                          size='sm'
-                          className='h-8 gap-1.5 rounded-lg bg-[#6366F1]/10 px-3 text-xs font-medium text-[#A5B4FC] transition-colors hover:bg-[#6366F1]/20 hover:text-indigo-300'
-                        >
-                          <PencilLine className='size-3.5' />
-                          Update
-                        </Button>
+
+                        <UpdateJobDialog job={job} />
 
                         {/* Delete */}
                         <DeleteJobDialog job={job} />

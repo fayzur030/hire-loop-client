@@ -35,7 +35,7 @@ export function DeleteJobDialog({ job }: JobProps) {
     try {
       setLoading(true)
 
-      const res = await deleteJob(job._id)
+      const res = await deleteJob(job._id as string)
 
       if (res) {
         toast.success('Job deleted successfully!')
