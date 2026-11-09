@@ -1,5 +1,9 @@
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
 
 export default function DashboardLayout({
   children,
@@ -9,10 +13,12 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <DashboardSidebar />
-      <main>
-        <SidebarTrigger />
-        <div className='pl-4'>{children}</div>
-      </main>
+      <SidebarInset>
+        <header className='flex h-12 items-center px-4'>
+          <SidebarTrigger />
+        </header>
+        <main className='flex-1 min-w-0 w-full px-4'>{children}</main>
+      </SidebarInset>
     </SidebarProvider>
   )
 }

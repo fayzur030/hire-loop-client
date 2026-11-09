@@ -14,16 +14,23 @@ import {
 import { getAllJobs } from '@/lib/api/getAllJobs'
 import type { JobFormData } from '@/types/jobForm.type'
 import { DeleteJobDialog } from '../_Components/DeleteJobDilalog'
-
-/* ── Design tokens (matches Add New Job form) ─────────────────────── */
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 const cardClass =
   'overflow-hidden rounded-2xl border border-[#27272A] bg-[#111113] shadow-sm'
 
 const thClass =
-  'h-11 whitespace-nowrap px-4 text-left text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase sm:px-5'
+  'hidden h-11 whitespace-nowrap px-4 text-left text-[11px] font-semibold tracking-[0.14em] text-zinc-500 uppercase sm:px-5 lg:table-cell'
 
-const tdClass = 'px-4 py-4 align-middle sm:px-5'
+const tdClass =
+  'grid grid-cols-[5rem_minmax(0,1fr)] items-start gap-3 px-4 py-3 align-middle sm:px-5 lg:table-cell lg:py-4'
+
+const mobileLabelClass =
+  'pt-0.5 text-[10px] font-semibold tracking-wide text-zinc-500 uppercase lg:hidden'
 
 /* ── Helpers ───────────────────────────────────────────────────────── */
 
@@ -104,6 +111,7 @@ export default async function ManageJobsPage() {
         </div>
 
         <Button
+          nativeButton={false}
           render={<Link href='/dashboard/recruiter/add-jobs' />}
           className='h-11 shrink-0 gap-2 rounded-xl bg-[#6366F1] px-5 text-sm font-semibold text-white shadow-lg shadow-[#6366F1]/10 transition-colors hover:bg-[#5558E8]'
         >
@@ -115,9 +123,9 @@ export default async function ManageJobsPage() {
       {/* Table card */}
       <section className={cardClass}>
         <div className='overflow-x-auto'>
-          <table className='w-full min-w-240 border-collapse text-sm'>
+          <table className='w-full min-w-0 border-collapse text-sm lg:min-w-240'>
             <thead>
-              <tr className='border-b border-[#27272A] bg-[#18181B]/60'>
+              <tr className='hidden border-b border-[#27272A] bg-[#18181B]/60 lg:table-row'>
                 <th className={thClass}>Job Title</th>
                 <th className={thClass}>Company</th>
                 <th className={thClass}>Category</th>
@@ -135,68 +143,77 @@ export default async function ManageJobsPage() {
                 return (
                   <tr
                     key={job._id}
-                    className='border-b border-[#27272A] transition-colors last:border-0 hover:bg-[#18181B]'
+                    className='mb-3 block rounded-xl border border-[#27272A] bg-[#18181B]/40 transition-colors last:mb-0 hover:bg-[#18181B] lg:mb-0 lg:table-row lg:rounded-none lg:border-x-0 lg:border-t-0 lg:bg-transparent lg:hover:bg-[#18181B] lg:last:border-b-0'
                   >
                     {/* Title — prominent */}
                     <td className={tdClass}>
-                      <div className='flex items-center gap-3'>
-                        <span className='font-semibold text-white'>
-                          {job.title}
-                        </span>
+                      <span className={mobileLabelClass}>Job Title</span>
+                      <div className='min-w-0 font-semibold break-words text-white'>
+                        {job.title}
                       </div>
                     </td>
 
                     {/* Company & location */}
                     <td className={tdClass}>
-                      <span className='font-medium text-zinc-200'>
-                        {job.companyName}
-                      </span>
+                      <span className={mobileLabelClass}>Company</span>
+                      <div className='min-w-0'>
+                        <span className='font-medium break-words text-zinc-200'>
+                          {job.companyName}
+                        </span>
 
-                      <span className='mt-0.5 flex items-center gap-1.5 text-xs text-zinc-500'>
-                        <MapPin className='size-3' />
-                        {job.isRemote ? 'Remote' : job.location || '—'}
-                      </span>
+                        <span className='mt-0.5 flex items-center gap-1.5 text-xs text-zinc-500'>
+                          <MapPin className='size-3 shrink-0' />
+                          {job.isRemote ? 'Remote' : job.location || '—'}
+                        </span>
+                      </div>
                     </td>
 
                     {/* Category */}
                     <td className={tdClass}>
-                      <span className='text-xs font-medium text-zinc-400'>
+                      <span className={mobileLabelClass}>Category</span>
+                      <span className='min-w-0 text-xs font-medium break-words text-zinc-400'>
                         {job.category}
                       </span>
                     </td>
 
                     {/* Job type */}
                     <td className={tdClass}>
+                      <span className={mobileLabelClass}>Job Type</span>
                       <Badge className='border-[#27272A] bg-[#18181B] font-medium text-zinc-300 capitalize hover:bg-[#18181B]'>
                         {job.jobType}
                       </Badge>
                     </td>
 
                     {/* Salary */}
-                    <td className={`${tdClass} whitespace-nowrap`}>
-                      <span className='font-medium text-zinc-200'>
+                    <td className={tdClass}>
+                      <span className={mobileLabelClass}>Salary</span>
+                      <span className='min-w-0 font-medium break-words text-zinc-200 lg:whitespace-nowrap'>
                         {formatSalary(job)}
                       </span>
                     </td>
 
                     {/* Status & deadline */}
                     <td className={tdClass}>
-                      <Badge
-                        className={`rounded-full py-1 pl-2.5 ${STATUS_STYLES[status].className}`}
-                      >
-                        <span
-                          className={`size-1.5 rounded-full ${statusDotClass[status]}`}
-                        />
-                        {STATUS_STYLES[status].label}
-                      </Badge>
+                      <span className={mobileLabelClass}>Status</span>
+                      <div className='min-w-0'>
+                        <Badge
+                          className={`rounded-full py-1 pl-2.5 ${STATUS_STYLES[status].className}`}
+                        >
+                          <span
+                            className={`size-1.5 rounded-full ${statusDotClass[status]}`}
+                          />
+                          {STATUS_STYLES[status].label}
+                        </Badge>
 
-                      <span className='mt-1 block text-[11px] text-zinc-500'>
-                        Deadline {formatDate(job.deadline)}
-                      </span>
+                        <span className='mt-1 block text-[11px] text-zinc-500'>
+                          Deadline {formatDate(job.deadline)}
+                        </span>
+                      </div>
                     </td>
 
                     {/* Actions */}
-                    <td className={`${tdClass} pr-6`}>
+                    <td className={`${tdClass} lg:pr-6`}>
+                      <span className={mobileLabelClass}>Actions</span>
                       <div className='flex items-center justify-end gap-1.5'>
                         {/* Update */}
                         <Button
@@ -221,6 +238,28 @@ export default async function ManageJobsPage() {
                         >
                           <MoreVertical className='size-4' />
                         </Button> */}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            render={
+                              <Button
+                                type='button'
+                                variant='ghost'
+                                size='icon-sm'
+                                aria-label={`More actions for ${job.title}`}
+                                className='rounded-lg text-zinc-500 transition-colors hover:bg-[#27272A] hover:text-white'
+                              />
+                            }
+                          >
+                            <MoreVertical className='size-4' />
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent
+                            align='end'
+                            className='w-40 border-[#27272A] bg-[#18181B] text-zinc-200'
+                          >
+                            View
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </td>
                   </tr>
