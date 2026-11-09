@@ -8,9 +8,9 @@ interface ApiResponse<T> {
   message?: string
 }
 
-export const getAllJobs = async (): Promise<Job[]> => {
+export const getAllJobs = async (query = ''): Promise<Job[]> => {
   try {
-    const res = await fetch(`${BASE_URL}/jobs`)
+    const res = await fetch(`${BASE_URL}/jobs?${query}`)
     if (!res.ok) {
       throw new Error('Failed to fetch jobs')
     }

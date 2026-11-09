@@ -24,7 +24,7 @@ import { authClient } from '@/lib/auth-client'
 const Navbar = () => {
   const { data: session } = authClient.useSession()
   const NAV_LINKS = [
-    { label: 'Browse Jobs', href: '/jobs' },
+    { label: 'Browse Jobs', href: '/browse-jobs' },
     { label: 'Company', href: '/companies' },
     { label: 'Pricing', href: '/pricing' },
     {
