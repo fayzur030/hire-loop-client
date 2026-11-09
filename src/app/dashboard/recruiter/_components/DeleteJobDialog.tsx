@@ -18,11 +18,11 @@ import {
 } from '@/components/ui/alert-dialog'
 
 import { Button } from '@/components/ui/button'
-import { deleteJob } from '@/lib/actions/jobs'
-import { JobFormData } from '@/types/jobForm.type'
+import { deleteJob } from '@/lib/api/jobs'
+import type { Job } from '@/types/job.types'
 
 interface JobProps {
-  job: JobFormData
+  job: Job
 }
 
 export function DeleteJobDialog({ job }: JobProps) {
@@ -35,7 +35,7 @@ export function DeleteJobDialog({ job }: JobProps) {
     try {
       setLoading(true)
 
-      const res = await deleteJob(job._id as string)
+      const res = await deleteJob(job._id)
 
       if (res) {
         toast.success('Job deleted successfully!')

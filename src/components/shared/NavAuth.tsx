@@ -61,7 +61,7 @@ const NavAuth = ({ mobile = false }: NavAuthProps) => {
 
   if (isPending) return null
 
-  const user = session?.user     
+  const user = session?.user
 
   // Sign Out Handler
   const handleSignOut = async () => {

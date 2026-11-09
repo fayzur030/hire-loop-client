@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sidebar'
 
 import { authClient } from '@/lib/auth-client'
+import type { UserRole } from '@/types/user.types'
 import {
   Bookmark,
   BriefcaseBusiness,
@@ -21,12 +22,19 @@ import {
   CreditCard,
   FileText,
   LayoutDashboard,
+  type LucideIcon,
   Settings,
   UserCog,
   Users,
 } from 'lucide-react'
 
-const menuItemsByRole = {
+type MenuItem = {
+  name: string
+  icon: LucideIcon
+  url: string
+}
+
+const menuItemsByRole: Record<UserRole, MenuItem[]> = {
   seeker: [
     { name: 'Dashboard', icon: LayoutDashboard, url: '/dashboard/seeker' },
     { name: 'Jobs', icon: BriefcaseBusiness, url: '/jobs' },
@@ -63,19 +71,16 @@ const menuItemsByRole = {
   ],
 }
 
-type UserRole = keyof typeof menuItemsByRole
+/** Falls back to the seeker menu when the role is unknown (e.g. signed out). */
+const resolveRole = (role?: string): UserRole =>
+  role === 'seeker' || role === 'recruiter' || role === 'admin'
+    ? role
+    : 'seeker'
 
 export function DashboardSidebar() {
   const { data: session } = authClient.useSession()
 
-  const userRole = session?.user?.role
-
-  const role: UserRole =
-    userRole === 'seeker' || userRole === 'recruiter' || userRole === 'admin'
-      ? userRole
-      : 'seeker'
-
-  const menuItems = menuItemsByRole[role]
+  const menuItems = menuItemsByRole[resolveRole(session?.user?.role)]
 
   return (
     <Sidebar>

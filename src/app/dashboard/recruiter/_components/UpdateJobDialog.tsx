@@ -41,67 +41,24 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { JobFormData } from '@/types/jobForm.type'
-import { updateJob } from '@/lib/actions/jobs'
+import type { Job, JobType, UpdateJobPayload } from '@/types/job.types'
+import { updateJob } from '@/lib/api/jobs'
+import { JOB_CATEGORIES, JOB_TYPE_OPTIONS } from '@/constants/jobOptions'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-type JobType = JobFormData['jobType']
-
 interface JobProps {
-  job: JobFormData
+  job: Job
 }
 
-export type TformData = {
-  title: string
-  companyName: string
-  category: string
-  jobType: JobType
-  isRemote: boolean
-  location: string
-  deadline: string
-  minSalary: string
-  maxSalary: string
-  salaryFrequency: string
-  responsibilities: string
-  requirements: string
-}
-
-const JOB_TYPES: ReadonlyArray<{ label: string; value: JobType }> = [
-  { label: 'Full-time', value: 'full-time' },
-  { label: 'Part-time', value: 'part-time' },
-  { label: 'Contract', value: 'contract' },
-  { label: 'Internship', value: 'internship' },
-]
-
-// Values intentionally match the stored category strings so job.category works as defaultValue
-const JOB_CATEGORIES = [
-  'Engineering & Tech',
-  'Frontend Development',
-  'Backend Development',
-  'Full Stack Development',
-  'Mobile App Development',
-  'UI/UX Design',
-  'Graphic Design',
-  'Product Management',
-  'Project Management',
-  'Marketing',
-  'Digital Marketing',
-  'Sales & Business Development',
-  'Human Resources',
-  'Finance & Accounting',
-  'Customer Support',
-  'Data Science & Analytics',
-  'DevOps & Infrastructure',
-  'Cybersecurity',
-  'Quality Assurance',
-  'Content Writing',
-  'Education & Training',
-  'Other',
-].map((label) => ({ label, value: label }))
+// Categories shaped for the select — values match the exact strings stored on a job.
+const JOB_CATEGORY_OPTIONS = JOB_CATEGORIES.map((label) => ({
+  label,
+  value: label,
+}))
 
 // Values intentionally match the stored frequency strings so job.salaryFrequency works as defaultValue
-const SALARY_FREQUENCIES = [
+const JOB_SALARY_FREQUENCY_OPTIONS = [
   'per Hour',
   'per Day',
   'per Week',
@@ -143,7 +100,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
 
     const formData = new FormData(e.currentTarget)
 
-    const jobData: TformData = {
+    const jobData: UpdateJobPayload = {
       title: String(formData.get('title')),
       companyName: String(formData.get('companyName')),
       category: String(formData.get('category')),
@@ -161,14 +118,13 @@ const UpdateJobDialog = ({ job }: JobProps) => {
     try {
       setLoading(true)
 
-      const res = await updateJob(job._id!, jobData)
-      console.log(res)
+      const res = await updateJob(job._id, jobData)
       if (res) {
         toast.success('Job updated successfully!')
       }
       router.refresh()
     } catch (error) {
-      console.log(error)
+      console.error(error)
       toast.error('Failed to update job!')
     } finally {
       setLoading(false)
@@ -254,7 +210,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                         Job Category <RequiredMark />
                       </Label>
                       <Select
-                        items={JOB_CATEGORIES}
+                        items={JOB_CATEGORY_OPTIONS}
                         name='category'
                         defaultValue={job.category}
                       >
@@ -262,7 +218,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {JOB_CATEGORIES.map((category) => (
+                          {JOB_CATEGORY_OPTIONS.map((category) => (
                             <SelectItem
                               key={category.value}
                               value={category.value}
@@ -284,7 +240,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                       aria-label='Job Type'
                       className='grid grid-cols-2 gap-2 sm:grid-cols-4'
                     >
-                      {JOB_TYPES.map((type) => (
+                      {JOB_TYPE_OPTIONS.map((type) => (
                         <button
                           key={type.value}
                           type='button'
@@ -424,7 +380,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                     <Field>
                       <Label htmlFor='salary-frequency'>Frequency</Label>
                       <Select
-                        items={SALARY_FREQUENCIES}
+                        items={JOB_SALARY_FREQUENCY_OPTIONS}
                         name='salaryFrequency'
                         defaultValue={job.salaryFrequency}
                       >
@@ -432,7 +388,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {SALARY_FREQUENCIES.map((frequency) => (
+                          {JOB_SALARY_FREQUENCY_OPTIONS.map((frequency) => (
                             <SelectItem
                               key={frequency.value}
                               value={frequency.value}

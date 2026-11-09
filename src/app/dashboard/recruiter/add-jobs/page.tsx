@@ -16,12 +16,16 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 
-import { BriefcaseBusiness, Globe2, Wallet } from 'lucide-react'
-import { JobFormData } from '@/types/jobForm.type'
-import { createJob } from '@/lib/actions/jobs'
+import { Globe2, Wallet } from 'lucide-react'
 import { toast } from 'sonner'
 
-type JobType = 'full-time' | 'part-time' | 'contract' | 'internship'
+import {
+  JOB_CATEGORIES,
+  JOB_TYPES,
+  SALARY_FREQUENCIES,
+} from '@/constants/jobOptions'
+import { createJob } from '@/lib/api/jobs'
+import type { JobFormData, JobType } from '@/types/job.types'
 
 /** Single source of truth — extend this object when adding a new field. */
 const INITIAL_FORM: JobFormData = {
@@ -39,48 +43,11 @@ const INITIAL_FORM: JobFormData = {
   requirements: '',
 }
 
-const JOB_CATEGORIES = [
-  'Engineering & Tech',
-  'Frontend Development',
-  'Backend Development',
-  'Full Stack Development',
-  'Mobile App Development',
-  'UI/UX Design',
-  'Graphic Design',
-  'Product Management',
-  'Project Management',
-  'Marketing',
-  'Digital Marketing',
-  'Sales & Business Development',
-  'Human Resources',
-  'Finance & Accounting',
-  'Customer Support',
-  'Data Science & Analytics',
-  'DevOps & Infrastructure',
-  'Cybersecurity',
-  'Quality Assurance',
-  'Content Writing',
-  'Education & Training',
-  'Other',
-]
-
-const JOB_TYPES: JobType[] = [
-  'full-time',
-  'part-time',
-  'contract',
-  'internship',
-]
-
-const SALARY_FREQUENCIES = [
-  'per hour',
-  'per day',
-  'per week',
-  'per month',
-  'per year',
-]
-
 const inputClass =
   'w-full h-11 rounded-xl border-[#27272A] bg-[#18181B] px-3.5 text-sm text-white placeholder:text-zinc-600 shadow-none transition-colors focus-visible:border-[#6366F1] focus-visible:ring-2 focus-visible:ring-[#6366F1]/20'
+
+const textareaClass =
+  'min-h-[120px] w-full resize-y rounded-xl border-[#27272A] bg-[#18181B] px-3.5 py-3 text-sm text-white placeholder:text-zinc-600 shadow-none transition-colors focus-visible:border-[#6366F1] focus-visible:ring-2 focus-visible:ring-[#6366F1]/20'
 
 const selectClass =
   'h-11 w-full rounded-xl border-[#27272A] bg-[#18181B] px-3 text-sm text-white shadow-none transition-colors data-[size=default]:h-11 data-[size=default]:rounded-xl data-[size=default]:py-0 focus-visible:border-[#6366F1] focus-visible:ring-2 focus-visible:ring-[#6366F1]/20'
@@ -430,7 +397,7 @@ export default function NewJobPage() {
                   placeholder='Describe the main responsibilities of this position...'
                   value={form.responsibilities}
                   onChange={bind('responsibilities')}
-                  className='min-h-[120px] w-full resize-y rounded-xl border-[#27272A] bg-[#18181B] px-3.5 py-3 text-sm text-white placeholder:text-zinc-600 shadow-none transition-colors focus-visible:border-[#6366F1] focus-visible:ring-2 focus-visible:ring-[#6366F1]/20'
+                  className={textareaClass}
                 />
               </div>
 
@@ -455,7 +422,7 @@ export default function NewJobPage() {
                   placeholder={'• Required skills\n• Experience\n• Education'}
                   value={form.requirements}
                   onChange={bind('requirements')}
-                  className='min-h-[120px] w-full resize-y rounded-xl border-[#27272A] bg-[#18181B] px-3.5 py-3 text-sm text-white placeholder:text-zinc-600 shadow-none transition-colors focus-visible:border-[#6366F1] focus-visible:ring-2 focus-visible:ring-[#6366F1]/20'
+                  className={textareaClass}
                 />
               </div>
             </fieldset>

@@ -7,19 +7,18 @@ import {
   ChevronRight,
   MapPin,
   MoreVertical,
-  PencilLine,
   Plus,
 } from 'lucide-react'
 
-import { getAllJobs } from '@/lib/api/getAllJobs'
-import type { JobFormData } from '@/types/jobForm.type'
-import { DeleteJobDialog } from '../_Components/DeleteJobDilalog'
+import { getAllJobs } from '@/lib/api/jobs'
+import type { Job } from '@/types/job.types'
+import { DeleteJobDialog } from '../_components/DeleteJobDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import UpdateJobDialog from '../_Components/UpdateJobDialog'
+import UpdateJobDialog from '../_components/UpdateJobDialog'
 
 const cardClass =
   'overflow-hidden rounded-2xl border border-[#27272A] bg-[#111113] shadow-sm'
@@ -73,7 +72,7 @@ const formatDate = (date: string) => {
   })
 }
 
-const formatSalary = (job: JobFormData) => {
+const formatSalary = (job: Job) => {
   if (!job.minSalary && !job.maxSalary) return 'Not specified'
   if (!job.maxSalary) return `${job.minSalary} ${job.salaryFrequency}`
   return `${job.minSalary} - ${job.maxSalary} ${job.salaryFrequency}`
