@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import {
   ArrowRight,
   Building2,
@@ -42,11 +42,29 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { JobFormData } from '@/types/jobForm.type'
+import { updateJob } from '@/lib/actions/jobs'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 type JobType = JobFormData['jobType']
 
 interface JobProps {
   job: JobFormData
+}
+
+export type TformData = {
+  title: string
+  companyName: string
+  category: string
+  jobType: JobType
+  isRemote: boolean
+  location: string
+  deadline: string
+  minSalary: string
+  maxSalary: string
+  salaryFrequency: string
+  responsibilities: string
+  requirements: string
 }
 
 const JOB_TYPES: ReadonlyArray<{ label: string; value: JobType }> = [
@@ -117,10 +135,50 @@ const UpdateJobDialog = ({ job }: JobProps) => {
   const [jobType, setJobType] = useState<JobType>(job.jobType)
   const [remoteAllowed, setRemoteAllowed] = useState(job.isRemote)
   const deadline = job.deadline ? String(job.deadline).slice(0, 10) : ''
+  const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
+  const handleUpdateJob = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.currentTarget)
+
+    const jobData: TformData = {
+      title: String(formData.get('title')),
+      companyName: String(formData.get('companyName')),
+      category: String(formData.get('category')),
+      jobType,
+      isRemote: remoteAllowed,
+      location: String(formData.get('location')),
+      deadline: String(formData.get('deadline')),
+      minSalary: String(formData.get('minSalary')),
+      maxSalary: String(formData.get('maxSalary')),
+      salaryFrequency: String(formData.get('salaryFrequency')),
+      responsibilities: String(formData.get('responsibilities')),
+      requirements: String(formData.get('requirements')),
+    }
+
+    try {
+      setLoading(true)
+
+      const res = await updateJob(job._id!, jobData)
+      console.log(res)
+      if (res) {
+        toast.success('Job updated successfully!')
+      }
+      router.refresh()
+    } catch (error) {
+      console.log(error)
+      toast.error('Failed to update job!')
+    } finally {
+      setLoading(false)
+      setOpen(false)
+    }
+  }
 
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
           render={
             <Button
@@ -134,11 +192,8 @@ const UpdateJobDialog = ({ job }: JobProps) => {
             </Button>
           }
         />
-        <DialogContent className='max-h-[90dvh] gap-0 overflow-y-autoa sm:max-w-xl md:max-w-2xl'>
-          <form
-            onSubmit={(event) => event.preventDefault()}
-            className='flex min-h-0 flex-col'
-          >
+        <DialogContent className='max-h-[90dvh] gap-0 overflow-y-auto sm:max-w-xl md:max-w-2xl'>
+          <form onSubmit={handleUpdateJob} className='flex min-h-0 flex-col'>
             {/* Scrollable body */}
             <div className='flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto no-scrollbar p-4 sm:p-5'>
               <DialogHeader className='items-start gap-1.5 text-left'>
@@ -187,7 +242,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                         </InputGroupAddon>
                         <InputGroupInput
                           id='company-name'
-                          name='company'
+                          name='companyName'
                           defaultValue={job.companyName}
                           required
                         />
@@ -200,13 +255,10 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                       </Label>
                       <Select
                         items={JOB_CATEGORIES}
+                        name='category'
                         defaultValue={job.category}
                       >
-                        <SelectTrigger
-                          id='job-category'
-                          name='category'
-                          className='w-full'
-                        >
+                        <SelectTrigger id='job-category' className='w-full'>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -373,13 +425,10 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                       <Label htmlFor='salary-frequency'>Frequency</Label>
                       <Select
                         items={SALARY_FREQUENCIES}
+                        name='salaryFrequency'
                         defaultValue={job.salaryFrequency}
                       >
-                        <SelectTrigger
-                          id='salary-frequency'
-                          name='frequency'
-                          className='w-full'
-                        >
+                        <SelectTrigger id='salary-frequency' className='w-full'>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -426,7 +475,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
                     </Label>
                     <Textarea
                       id='qualifications'
-                      name='qualifications'
+                      name='requirements'
                       placeholder='List the qualifications and requirements...'
                       defaultValue={job.requirements}
                       className='min-h-28'
@@ -440,6 +489,7 @@ const UpdateJobDialog = ({ job }: JobProps) => {
             <DialogFooter className='sm:justify-start'>
               <Button
                 type='submit'
+                disabled={loading}
                 data-icon='inline-end'
                 className='gap-1.5 bg-[#6366F1] text-white hover:bg-[#5457E5] data-[icon=inline-end]:pr-2'
               >

@@ -1,3 +1,4 @@
+import { TformData } from '@/app/dashboard/recruiter/_Components/UpdateJobDialog'
 import { JobFormData } from '@/types/jobForm.type'
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -30,4 +31,26 @@ export const deleteJob = async (jobId: string) => {
   }
 
   return data.data
+}
+
+export const updateJob = async (jobId: string, jobData: TformData) => {
+  try {
+    const res = await fetch(`${BASE_URL}/update-jobs/${jobId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(jobData),
+    })
+
+    if (!res.ok) {
+      throw new Error('Failed to update job')
+    }
+
+    const data = await res.json()
+    return data.data
+  } catch (error) {
+    console.error('Update job error:', error)
+    throw error
+  }
 }
