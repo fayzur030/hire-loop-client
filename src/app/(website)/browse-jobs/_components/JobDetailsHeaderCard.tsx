@@ -1,5 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
+import { applyAJob } from '@/lib/actions/application'
 import { authClient } from '@/lib/auth-client'
 import { JobFormData } from '@/types/job.types'
 import { BookmarkIcon, BuildingIcon } from 'lucide-react'
@@ -13,14 +14,38 @@ const JobDetailsHeaderCard = ({ job }: JobProps) => {
   const router = useRouter()
   const { data: session } = authClient.useSession()
   const user = session?.user
-  const handleApplyJob = () => {
+  const handleApplyJob = async () => {
     if (!user) {
       toast.info('Please sign in')
       router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
       return
-    } else {
-      //save the job database
-      console.log(job)
+    }
+
+    if (user.role !== 'seeker') {
+      toast.error('Only job seekers can apply for jobs')
+      return
+    }
+
+    try {
+      const application = {
+        jobId: job._id,
+        jobTitle: job.title,
+        companyName: job.companyName,
+        userId: user.id,
+        email: user.email,
+      }
+
+      const res = await applyAJob(application)
+
+      if (res.insertedId) {
+        toast.success('Application submitted successfully')
+        router.push('/browse-jobs')
+      } else {
+        toast.error('Something went wrong. Please try again.')
+      }
+    } catch (error) {
+      console.error('Application error:', error)
+      toast.error('Failed to submit application')
     }
   }
 
