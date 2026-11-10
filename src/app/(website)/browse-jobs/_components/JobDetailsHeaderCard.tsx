@@ -8,16 +8,18 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 interface JobProps {
   job: JobFormData
+  /** The job id from the URL params — always a real string, unlike `job._id`. */
+  jobId: string
 }
 
-const JobDetailsHeaderCard = ({ job }: JobProps) => {
+const JobDetailsHeaderCard = ({ job, jobId }: JobProps) => {
   const router = useRouter()
   const { data: session } = authClient.useSession()
   const user = session?.user
   const handleApplyJob = async () => {
     if (!user) {
       toast.info('Please sign in')
-      router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
+      router.push(`/sign-in?redirectTo=/browse-jobs/${jobId}`)
       return
     }
 
@@ -28,7 +30,7 @@ const JobDetailsHeaderCard = ({ job }: JobProps) => {
 
     try {
       const application = {
-        jobId: job._id,
+        jobId: jobId,
         jobTitle: job.title,
         companyName: job.companyName,
         userId: user.id,
