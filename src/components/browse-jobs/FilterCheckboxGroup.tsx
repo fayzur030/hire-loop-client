@@ -1,6 +1,6 @@
 'use client'
 
-import { useId, useState } from 'react'
+import { useId } from 'react'
 import { CheckIcon } from 'lucide-react'
 import { cn } from 'cn'
 
@@ -15,6 +15,7 @@ export interface FilterOption {
 interface FilterCheckboxGroupProps {
   title: string
   options: FilterOption[]
+  selectedValue?: string | null
   /** Called when an option is selected. Wire the URL query update here. */
   onSelect?: (value: string) => void
 }
@@ -30,24 +31,20 @@ const formatCount = (count: number) =>
 const FilterCheckboxGroup = ({
   title,
   options,
+  selectedValue,
   onSelect,
 }: FilterCheckboxGroupProps) => {
   // Local selection state — the query itself is not updated yet.
-  const [selected, setSelected] = useState<string | null>(null)
-  const name = useId()
 
-  const select = (value: string) => {
-    setSelected(value)
-    onSelect?.(value)
-  }
+  const name = useId()
 
   return (
     <fieldset className='border-0 p-0'>
       <legend className='text-sm font-semibold text-foreground'>{title}</legend>
 
       <ul className='mt-3 space-y-2'>
-        {options.map(option => {
-          const isSelected = selected === option.value
+        {options.map((option) => {
+          const isSelected = selectedValue === option.value
 
           return (
             <li key={option.value}>
@@ -57,7 +54,7 @@ const FilterCheckboxGroup = ({
                   name={name}
                   className='sr-only peer'
                   checked={isSelected}
-                  onChange={() => select(option.value)}
+                  onChange={() => onSelect?.(option.value)}
                 />
 
                 {/* Custom checkbox square */}
@@ -67,13 +64,13 @@ const FilterCheckboxGroup = ({
                     'peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
                     isSelected
                       ? 'border-primary bg-primary'
-                      : 'border-border bg-input/50',
+                      : 'border-border bg-input/50'
                   )}
                 >
                   <CheckIcon
                     className={cn(
                       'size-3 text-primary-foreground',
-                      isSelected ? 'opacity-100' : 'opacity-0',
+                      isSelected ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                 </span>
@@ -81,7 +78,7 @@ const FilterCheckboxGroup = ({
                 <span
                   className={cn(
                     'flex-1 text-sm transition-colors',
-                    isSelected ? 'text-foreground' : 'text-zinc-300',
+                    isSelected ? 'text-foreground' : 'text-zinc-300'
                   )}
                 >
                   {option.label}

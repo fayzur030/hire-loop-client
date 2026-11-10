@@ -3,15 +3,15 @@ import type { FilterOption } from './FilterCheckboxGroup'
 
 /** Filter options based on common fields of the `JobFormData` type. */
 export const JOB_TYPE_OPTIONS: FilterOption[] = [
-  { value: 'full-time', label: 'Full-time' },
+  { value: 'Full-time', label: 'Full-time' },
   { value: 'part-time', label: 'Part-time' },
   { value: 'contract', label: 'Contract' },
   { value: 'internship', label: 'Internship' },
 ]
 
 export const WORK_TYPE_OPTIONS: FilterOption[] = [
-  { value: 'remote', label: 'Remote' },
-  { value: 'on-site', label: 'On-site' },
+  { value: 'true', label: 'isRemote' },
+  { value: 'false', label: 'On-site' },
 ]
 
 /** Unique categories found in the given jobs, each with its job count. */
