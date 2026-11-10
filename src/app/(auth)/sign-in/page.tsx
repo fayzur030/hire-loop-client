@@ -28,7 +28,6 @@ export default function SignInPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectPath = searchParams.get('redirectTo') ?? '/'
-  console.log(redirectPath, '<= redirect')
   const { fields, errors, updateField, setFieldErrors } =
     useFormFields<SignInFields>({ email: '', password: '' })
 

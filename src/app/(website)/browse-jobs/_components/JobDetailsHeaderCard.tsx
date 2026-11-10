@@ -16,9 +16,11 @@ const JobDetailsHeaderCard = ({ job }: JobProps) => {
   const handleApplyJob = () => {
     if (!user) {
       toast.info('Please sign in')
-      // router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
       router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
       return
+    } else {
+      //save the job database
+      console.log(job)
     }
   }
 
