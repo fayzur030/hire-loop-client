@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, type FormEvent } from 'react'
 import { ArrowRight, LoaderCircle, LockKeyhole, Mail } from 'lucide-react'
 import { toast } from 'sonner'
@@ -26,6 +26,9 @@ export default function SignInPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectPath = searchParams.get('redirectTo') ?? '/'
+  console.log(redirectPath, '<= redirect')
   const { fields, errors, updateField, setFieldErrors } =
     useFormFields<SignInFields>({ email: '', password: '' })
 
@@ -50,6 +53,7 @@ export default function SignInPage() {
       const { data, error } = await authClient.signIn.email({
         email: fields.email,
         password: fields.password,
+        callbackURL: redirectPath,
       })
       if (error) {
         toast.error(error.message || 'Invalid email or password.')
@@ -57,7 +61,7 @@ export default function SignInPage() {
       }
 
       toast.success(`Welcome back ${data.user.name}!`)
-      router.push('/')
+      // router.push(redirectPath)
       router.refresh()
     } catch (error) {
       console.error(error)

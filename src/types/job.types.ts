@@ -15,6 +15,17 @@ export interface JobFormData {
   salaryFrequency: string
   responsibilities: string
   requirements: string
+
+  /** Extra fields shown on the job details page (optional until the backend sends them). */
+  description?: string
+  skills?: string[]
+  benefits?: string[]
+  isVerified?: boolean
+  experience?: string
+  companyImageUrl?: string
+  companySize?: string
+  companyIndustry?: string
+  companyWebsite?: string
 }
 
 /** A stored job as returned by the API — always has an `_id`. */

@@ -22,6 +22,20 @@ export const getAllJobs = async (query = ''): Promise<Job[]> => {
   }
 }
 
+export const getJobById = async (jobId: string): Promise<Job> => {
+  try {
+    const res = await fetch(`${BASE_URL}/jobs/${jobId}`)
+    if (!res.ok) {
+      throw new Error('Failed to fetch job')
+    }
+    const data: ApiResponse<Job> = await res.json()
+    return data.data
+  } catch (error) {
+    console.error('Error fetching job:', error)
+    throw error
+  }
+}
+
 export const createJob = async (form: JobFormData) => {
   const res = await fetch(`${BASE_URL}/add-job`, {
     method: 'POST',

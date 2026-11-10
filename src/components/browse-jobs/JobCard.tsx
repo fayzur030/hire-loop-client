@@ -32,7 +32,7 @@ const JobCard = ({ job }: JobCardProps) => {
         <div className='min-w-0 flex-1'>
           <h3 className='font-heading text-lg font-semibold text-foreground'>
             <Link
-              href={`/jobs/${job._id}`}
+              href={`/browse-jobs/${job._id}`}
               className='transition-colors hover:text-primary'
             >
               {job.title}
