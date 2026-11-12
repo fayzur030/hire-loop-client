@@ -39,7 +39,11 @@ const menuItemsByRole: Record<UserRole, MenuItem[]> = {
     { name: 'Dashboard', icon: LayoutDashboard, url: '/dashboard/seeker' },
     { name: 'Jobs', icon: BriefcaseBusiness, url: '/jobs' },
     { name: 'Saved Jobs', icon: Bookmark, url: '/saved-jobs' },
-    { name: 'Applications', icon: FileText, url: '/applications' },
+    {
+      name: 'Applications',
+      icon: FileText,
+      url: '/dashboard/seeker/applications',
+    },
     { name: 'Billing', icon: CreditCard, url: '/billing' },
     { name: 'Settings', icon: Settings, url: '/settings' },
   ],
