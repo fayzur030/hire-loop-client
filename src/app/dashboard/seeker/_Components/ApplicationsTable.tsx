@@ -67,6 +67,7 @@ const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
           <tbody>
             {applications.map((application, index) => {
               const avatarColor = AVATAR_COLORS[index % AVATAR_COLORS.length]
+              const status = application.status ?? 'applied'
 
               return (
                 <tr
@@ -81,7 +82,7 @@ const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
                       {application.jobTitle.charAt(0).toUpperCase()}
                     </div>
 
-                    <div className='min-w-0'>
+                    <div className='min-w-0 mt-3'>
                       <p className='font-semibold break-words text-white'>
                         {application.jobTitle}
                       </p>
@@ -114,7 +115,7 @@ const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
                   {/* Status */}
                   <td className={tdClass}>
                     <span className={mobileLabelClass}>Status</span>
-                    <StatusBadge status={application.status} />
+                    <StatusBadge status={status} />
                   </td>
 
                   {/* Action */}

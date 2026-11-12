@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // import type { JobApplication } from '@/types/application.types'
 
-
-
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { getApplications } from '@/lib/actions/application'
@@ -84,6 +82,7 @@ const ApplicationPage = async () => {
   })
 
   const APPLICATIONS = await getApplications(`applicantId=${session?.user?.id}`) // data from api
+  // console.log(APPLICATIONS.length, 'application from api')
   const activeApplications = APPLICATIONS.filter((a) => !a.isArchived)
   const archivedApplications = APPLICATIONS.filter((a) => a.isArchived)
 

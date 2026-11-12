@@ -1,4 +1,8 @@
-import { ApplyJobPayload, JobApplication } from '@/types/application.types'
+import {
+  AppliedJobsCountResponse,
+  ApplyJobPayload,
+  JobApplication,
+} from '@/types/application.types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -39,6 +43,23 @@ export const getApplications = async (
     return data.data
   } catch (error) {
     console.error('Error fetching applications:', error)
+    throw error
+  }
+}
+
+export const getApplicationsCount = async (
+  query = ''
+): Promise<AppliedJobsCountResponse> => {
+  try {
+    const res = await fetch(`${BASE_URL}/applications/count?${query}`)
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch applications count')
+    }
+
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching applications count:', error)
     throw error
   }
 }

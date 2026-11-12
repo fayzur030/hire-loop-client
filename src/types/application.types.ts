@@ -25,3 +25,9 @@ export interface JobApplication extends ApplyJobPayload {
   jobType?: string
   workMode?: string
 }
+
+export type AppliedJobsCountResponse = {
+  success: boolean
+  message: string
+  count: number
+}
