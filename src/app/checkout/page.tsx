@@ -28,20 +28,22 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+import { Flag } from './_components/Flag'
+
 /* -------------------------------------------------------------------------- */
 /*  Static design data — swap for real data later                             */
 /* -------------------------------------------------------------------------- */
 
 const CURRENCIES = [
-  { code: 'BDT', flag: '🇧🇩', label: 'BDT 2,553.33' },
-  { code: 'USD', flag: '🇺🇸', label: '$20.00' },
+  { code: 'BDT', flag: 'BD', label: 'BDT 2,553.33' },
+  { code: 'USD', flag: 'US', label: '$20.00' },
 ]
 
 const COUNTRIES = [
-  { code: 'BD', flag: '🇧🇩', label: 'Bangladesh' },
-  { code: 'US', flag: '🇺🇸', label: 'United States' },
-  { code: 'GB', flag: '🇬🇧', label: 'United Kingdom' },
-  { code: 'CA', flag: '🇨🇦', label: 'Canada' },
+  { code: 'BD', flag: 'BD', label: 'Bangladesh' },
+  { code: 'US', flag: 'US', label: 'United States' },
+  { code: 'GB', flag: 'GB', label: 'United Kingdom' },
+  { code: 'CA', flag: 'CA', label: 'Canada' },
 ]
 
 const FIELD_CLASS =
@@ -80,7 +82,7 @@ function CardBrands() {
 /*  Page                                                                       */
 /* -------------------------------------------------------------------------- */
 
-export default function PaymentPage() {
+export default function CheckOutPage() {
   const [currency, setCurrency] = useState('BDT')
   const [country, setCountry] = useState('BD')
 
@@ -140,9 +142,7 @@ export default function PaymentPage() {
                       className='sr-only'
                     />
 
-                    <span aria-hidden='true' className='text-base leading-none'>
-                      {item.flag}
-                    </span>
+                    <Flag code={item.flag} />
 
                     <span className='font-medium'>{item.label}</span>
                   </Label>
@@ -158,8 +158,12 @@ export default function PaymentPage() {
 
             <div className='mt-6 flex items-start justify-between gap-4'>
               <div>
-                <p className='text-sm font-semibold text-white'>HireLoop Pro Plan</p>
-                <p className='mt-1 text-xs text-zinc-500'>Access to all features</p>
+                <p className='text-sm font-semibold text-white'>
+                  HireLoop Pro Plan
+                </p>
+                <p className='mt-1 text-xs text-zinc-500'>
+                  Access to all features
+                </p>
               </div>
 
               <p className='text-sm font-semibold text-white'>BDT 2,553.33</p>
@@ -223,14 +227,14 @@ export default function PaymentPage() {
                 Payment method
               </h2>
 
-              <div className='mt-3 rounded-xl border border-[#2A2A2E] bg-[#1A1A1D]'>
-                <div className='flex items-center gap-2.5 px-4 py-3'>
+              <div className='mt-3 rounded-xl border border-[#2A2A2E] bg-[#1A1A1D] p-1.5'>
+                <div className='flex items-center gap-2.5 px-2.5 py-2'>
                   <CreditCardIcon className='size-4 text-zinc-300' />
 
                   <span className='text-sm font-medium text-white'>Card</span>
                 </div>
 
-                <div className='space-y-4 border-t border-[#2A2A2E] bg-[#131316] px-4 py-4'>
+                <div className='space-y-4 rounded-lg border border-[#2A2A2E] bg-[#131316] p-4'>
                   {/* Card information */}
                   <Label className='text-[10px] font-semibold uppercase tracking-[0.12em] text-zinc-500'>
                     Card information
@@ -305,7 +309,14 @@ export default function PaymentPage() {
                               (entry) => entry.code === value
                             )
 
-                            return item ? `${item.flag} ${item.label}` : value
+                            if (!item) return value
+
+                            return (
+                              <span className='flex items-center gap-2'>
+                                <Flag code={item.flag} />
+                                {item.label}
+                              </span>
+                            )
                           }}
                         </SelectValue>
                       </SelectTrigger>
@@ -313,7 +324,10 @@ export default function PaymentPage() {
                       <SelectContent>
                         {COUNTRIES.map((item) => (
                           <SelectItem key={item.code} value={item.code}>
-                            {item.flag} {item.label}
+                            <span className='flex items-center gap-2'>
+                              <Flag code={item.flag} />
+                              {item.label}
+                            </span>
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -36,7 +36,7 @@ const JobDetailsHeaderCard = ({ job }: JobProps) => {
     //less more than 10 and not premium user
     if (countResult.count >= 5) {
       // Redirect to the payment page
-      router.push('/payment')
+      router.push('/checkout')
       return
     }
     try {
