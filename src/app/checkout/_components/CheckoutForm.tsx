@@ -155,7 +155,7 @@ export function CheckoutForm({
                 Contact information
               </h2>
 
-              <div className='mt-3'>
+              {/* <div className='mt-3'>
                 <Label htmlFor='email' className='text-xs text-zinc-500'>
                   Email
                 </Label>
@@ -169,7 +169,7 @@ export function CheckoutForm({
                   placeholder='you@example.com'
                   className={`${FIELD_CLASS} mt-2`}
                 />
-              </div>
+              </div> */}
 
               <Button
                 type='submit'

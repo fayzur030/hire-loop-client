@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
+import { getSession } from '@/lib/core/sessionFromServer'
 
 export async function POST() {
+  const userSession = await getSession()
+
   try {
     const headersList = await headers()
     const origin = headersList.get('origin')
@@ -16,6 +19,10 @@ export async function POST() {
           quantity: 1,
         },
       ],
+      customer_email: userSession?.user.email,
+      metadata: {
+        userId: userSession?.user.id ?? null,
+      },
       mode: 'payment',
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       // Provide a name (for example, hosted_web_0001) to label this Checkout integration and measure its conversion independently

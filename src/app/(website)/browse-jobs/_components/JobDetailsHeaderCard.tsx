@@ -1,6 +1,7 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { applyAJob, getApplicationsCount } from '@/lib/actions/application'
+import { getUserPremiumById } from '@/lib/api/users'
 import { authClient } from '@/lib/auth-client'
 import { JobFormData } from '@/types/job.types'
 import { BookmarkIcon, BuildingIcon } from 'lucide-react'
@@ -31,10 +32,11 @@ const JobDetailsHeaderCard = ({ job }: JobProps) => {
       toast.error('Unable to apply: job details are unavailable')
       return
     }
-
+    const premiumResult = await getUserPremiumById(user.id)
+    console.log(premiumResult)
     const countResult = await getApplicationsCount(`applicantId=${user.id}`)
     //less more than 10 and not premium user
-    if (countResult.count >= 5) {
+    if (!premiumResult.premium && countResult.count >= 3) {
       // Redirect to the payment page
       router.push('/checkout')
       return
