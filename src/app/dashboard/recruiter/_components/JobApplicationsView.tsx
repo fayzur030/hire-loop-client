@@ -15,7 +15,10 @@ import { StatCard } from '@/components/dashboard/StatCard'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { updateApplicationStatus } from '@/lib/actions/application'
-import type { ApplicationStatus, JobApplication } from '@/types/application.types'
+import type {
+  ApplicationStatus,
+  JobApplication,
+} from '@/types/application.types'
 import { ApplicantsTable } from './ApplicantsTable'
 
 /** Bucket shown on a tab — "all" keeps every application visible. */
@@ -82,42 +85,86 @@ export function JobApplicationsView({
 
   const visibleRows = useMemo(
     () =>
-      filter === 'all'
-        ? rows
-        : rows.filter((row) => row.status === filter),
+      filter === 'all' ? rows : rows.filter((row) => row.status === filter),
     [rows, filter]
   )
 
-  const handleStatusChange = async (
-    applicationId: string,
-    status: ApplicationStatus
-  ) => {
-    const previousStatus = rows.find(
-      (row) => row._id === applicationId
-    )?.status
+  // const handleStatusChange = async (
+  //   applicationId: string,
+  //   status: ApplicationStatus
+  // ) => {
+  //   const previousStatus = rows.find((row) => row._id === applicationId)?.status
 
+  //   setStatusOverrides((current) => ({
+  //     ...current,
+  //     [applicationId]: status,
+  //   }))
+  //   setPendingApplicationId(applicationId)
+
+  //   //todo: update status
+  //   try {
+  //     await updateApplicationStatus()
+
+  //     toast.success(`Application moved to ${APPLICATION_STATUS_LABELS[status]}`)
+  //     router.refresh()
+  //   } catch (error) {
+  //     console.error('Failed to update application status:', error)
+
+  //     // Roll the row back to the status it had before the failed update.
+  //     setStatusOverrides((current) => {
+  //       const next = { ...current }
+
+  //       if (previousStatus) {
+  //         next[applicationId] = previousStatus
+  //       } else {
+  //         delete next[applicationId]
+  //       }
+
+  //       return next
+  //     })
+
+  //     toast.error(
+  //       error instanceof Error
+  //         ? error.message
+  //         : 'Failed to update application status'
+  //     )
+  //   } finally {
+  //     setPendingApplicationId(null)
+  //   }
+  // }
+
+  const handleStatusChange = async (id: string, status: ApplicationStatus) => {
+    const previousStatus = rows.find((row) => row._id === id)?.status
+
+    // Immediately update the UI
     setStatusOverrides((current) => ({
       ...current,
-      [applicationId]: status,
+      [id]: status,
     }))
-    setPendingApplicationId(applicationId)
+
+    setPendingApplicationId(id)
 
     try {
-      await updateApplicationStatus(applicationId, status)
+      const result = await updateApplicationStatus(id, { status })
+
+      if (!result.success) {
+        throw new Error('Failed to update application status')
+      }
 
       toast.success(`Application moved to ${APPLICATION_STATUS_LABELS[status]}`)
+
       router.refresh()
     } catch (error) {
       console.error('Failed to update application status:', error)
 
-      // Roll the row back to the status it had before the failed update.
+      // Restore previous status
       setStatusOverrides((current) => {
         const next = { ...current }
 
         if (previousStatus) {
-          next[applicationId] = previousStatus
+          next[id] = previousStatus
         } else {
-          delete next[applicationId]
+          delete next[id]
         }
 
         return next
@@ -132,7 +179,6 @@ export function JobApplicationsView({
       setPendingApplicationId(null)
     }
   }
-
   if (hasError) {
     return (
       <div className='mt-6 flex items-start gap-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-5 text-sm text-red-300'>

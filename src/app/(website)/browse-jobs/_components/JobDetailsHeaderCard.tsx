@@ -48,6 +48,7 @@ const JobDetailsHeaderCard = ({ job }: JobProps) => {
         companyName: job.companyName,
         applicantId: user.id,
         email: user.email,
+        status: 'pending',
       }
 
       const res = await applyAJob(application)

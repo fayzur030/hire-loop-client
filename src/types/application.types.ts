@@ -12,6 +12,7 @@ export interface ApplyJobPayload {
   companyName: string
   applicantId: string
   email: string
+  status?: ApplicationStatus
 }
 
 /** A stored application as returned by the API. */

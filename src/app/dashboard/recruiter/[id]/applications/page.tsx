@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { BriefcaseBusinessIcon, ChevronRightIcon, MapPinIcon } from 'lucide-react'
+import {
+  BriefcaseBusinessIcon,
+  ChevronRightIcon,
+  MapPinIcon,
+} from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { getAllJobs } from '@/lib/api/jobs'
@@ -69,7 +73,8 @@ const JobApplicationsPage = async ({ params }: JobApplicationsPageProps) => {
             </h1>
 
             <Badge className='border-[#6366F1]/20 bg-[#6366F1]/10 text-[#A5B4FC]'>
-              {applications.length} applicant{applications.length === 1 ? '' : 's'}
+              {applications.length} applicant
+              {applications.length === 1 ? '' : 's'}
             </Badge>
           </div>
 

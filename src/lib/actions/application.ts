@@ -100,28 +100,18 @@ export const getApplicationsCount = async (
  * file has to change.
  */
 export const updateApplicationStatus = async (
-  applicationId: string,
-  status: ApplicationStatus
-): Promise<JobApplication | null> => {
-  const payload: UpdateApplicationStatusPayload = { status }
-
-  const res = await fetch(
-    `${BASE_URL}/applications/${encodeURIComponent(applicationId)}/status`,
-    {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    }
-  )
-
-  const data: { success?: boolean; message?: string; data?: JobApplication } =
-    await res.json().catch(() => ({}))
-
+  id: string,
+  data: { status: string }
+) => {
+  const res = await fetch(`${BASE_URL}/applications/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
   if (!res.ok) {
-    throw new Error(data.message || 'Failed to update application status')
+    throw new Error('Failed to update status')
   }
-
-  return data.data ?? null
+  return res.json()
 }
