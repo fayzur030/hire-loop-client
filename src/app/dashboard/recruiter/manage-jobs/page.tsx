@@ -3,12 +3,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-import {
-  ChevronRight,
-  MapPin,
-  MoreVertical,
-  Plus,
-} from 'lucide-react'
+import { ChevronRight, MapPin, MoreVertical, Plus } from 'lucide-react'
 
 import { getAllJobs } from '@/lib/api/jobs'
 import type { Job } from '@/types/job.types'
@@ -19,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import UpdateJobDialog from '../_components/UpdateJobDialog'
+import { getSession } from '@/lib/core/sessionFromServer'
 
 const cardClass =
   'overflow-hidden rounded-2xl border border-[#27272A] bg-[#111113] shadow-sm'
@@ -81,7 +77,9 @@ const formatSalary = (job: Job) => {
 /* ── Page ──────────────────────────────────────────────────────────── */
 
 export default async function ManageJobsPage() {
-  const JOBS = await getAllJobs()
+  const session = await getSession()
+  const JOBS = await getAllJobs(`reciterId=${session?.user.id}`)
+  console.log(JOBS)
   return (
     <div className='min-w-0 px-4 py-8 sm:px-6 lg:px-8 lg:py-10'>
       {/* Breadcrumb */}

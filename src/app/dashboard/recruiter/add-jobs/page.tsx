@@ -26,9 +26,12 @@ import {
 } from '@/constants/jobOptions'
 import { createJob } from '@/lib/api/jobs'
 import type { JobFormData, JobType } from '@/types/job.types'
+import { authClient } from '@/lib/auth-client'
 
 /** Single source of truth — extend this object when adding a new field. */
+
 const INITIAL_FORM: JobFormData = {
+  reciterId: '',
   title: '',
   companyName: '',
   category: '',
@@ -55,6 +58,8 @@ const selectClass =
 const labelClass = 'text-sm font-medium text-zinc-300'
 
 export default function NewJobPage() {
+  const { data: session } = authClient.useSession()
+  const userId = session?.user.id
   const [form, setForm] = useState<JobFormData>(INITIAL_FORM)
   const [submitting, setSubmitting] = useState(false)
 
@@ -71,12 +76,22 @@ export default function NewJobPage() {
     <K extends keyof JobFormData>(key: K) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       update(key, event.target.value as JobFormData[K])
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (!userId) {
+      toast.error('Please login to post a job.')
+      return
+    }
+
     setSubmitting(true)
+
     try {
-      const addJob = await createJob(form)
+      const addJob = await createJob({
+        ...form,
+        reciterId: userId,
+      })
+
       if (addJob) {
         toast.success('Job posted successfully!')
         setForm(INITIAL_FORM)
@@ -90,7 +105,6 @@ export default function NewJobPage() {
       setSubmitting(false)
     }
   }
-
   const charCount = (key: 'responsibilities' | 'requirements') =>
     `${form[key].length}/2000`
 

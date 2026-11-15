@@ -3,6 +3,7 @@ export type JobType = 'full-time' | 'part-time' | 'contract' | 'internship'
 /** The job data collected by the "Add job" form and sent to the API. */
 export interface JobFormData {
   _id?: string
+  reciterId: string
   title: string
   companyName: string
   category: string
@@ -15,7 +16,6 @@ export interface JobFormData {
   salaryFrequency: string
   responsibilities: string
   requirements: string
-
   /** Extra fields shown on the job details page (optional until the backend sends them). */
   description?: string
   skills?: string[]
