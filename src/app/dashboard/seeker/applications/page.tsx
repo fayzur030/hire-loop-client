@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { getApplications } from '@/lib/actions/application'
+import { normalizeApplicationStatus } from '@/components/applications/application-status'
 import ApplicationsTable from '../_Components/ApplicationsTable'
 import StatCard from '../_Components/StatCard'
 
@@ -92,7 +93,9 @@ const ApplicationPage = async () => {
     (a) => a.status === 'shortlisted'
   ).length
   const interviews = activeApplications.filter((a) =>
-    ['review', 'shortlisted', 'offered'].includes(a.status)
+    ['review', 'shortlisted', 'offered'].includes(
+      normalizeApplicationStatus(a.status)
+    )
   ).length
   const successRate = totalApplied
     ? Math.round(

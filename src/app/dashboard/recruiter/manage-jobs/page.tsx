@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-import { ChevronRight, MapPin, MoreVertical, Plus } from 'lucide-react'
+import { ChevronRight, MapPin, MoreVertical, Plus, Users } from 'lucide-react'
 
 import { getAllJobs } from '@/lib/api/jobs'
 import type { Job } from '@/types/job.types'
@@ -11,6 +11,7 @@ import { DeleteJobDialog } from '../_components/DeleteJobDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import UpdateJobDialog from '../_components/UpdateJobDialog'
@@ -213,6 +214,22 @@ export default async function ManageJobsPage() {
                     <td className={`${tdClass} lg:pr-6`}>
                       <span className={mobileLabelClass}>Actions</span>
                       <div className='flex items-center justify-end gap-1.5'>
+                        {/* View applications */}
+                        <Button
+                          nativeButton={false}
+                          variant='ghost'
+                          size='icon-sm'
+                          render={
+                            <Link
+                              href={`/dashboard/recruiter/${job._id}/applications`}
+                            />
+                          }
+                          aria-label={`View applications for ${job.title}`}
+                          className='rounded-lg text-zinc-500 transition-colors hover:bg-[#27272A] hover:text-white'
+                        >
+                          <Users className='size-4' />
+                        </Button>
+
                         {/* Update */}
 
                         <UpdateJobDialog job={job} />
@@ -249,7 +266,17 @@ export default async function ManageJobsPage() {
                             align='end'
                             className='w-40 border-[#27272A] bg-[#18181B] text-zinc-200'
                           >
-                            View
+                            <DropdownMenuItem
+                              render={
+                                <Link
+                                  href={`/dashboard/recruiter/${job._id}/applications`}
+                                />
+                              }
+                              className='cursor-pointer'
+                            >
+                              <Users className='size-4' />
+                              View Applications
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>

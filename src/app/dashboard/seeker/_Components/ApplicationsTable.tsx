@@ -1,26 +1,9 @@
 import { Button } from '@/components/ui/button'
+import { formatRelativeTime } from '@/lib/format'
 import { JobApplication } from '@/types/application.types'
 import StatusBadge from './StatusBadge'
 
 /* ── Helpers ───────────────────────────────────────────────────────── */
-
-/** Formats a date as "2 hours ago". */
-const timeAgo = (date: string) => {
-  const parsed = new Date(date)
-  if (Number.isNaN(parsed.getTime())) return date
-
-  const minutes = Math.floor((Date.now() - parsed.getTime()) / 60000)
-  if (minutes < 1) return 'Just now'
-  if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
-
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`
-
-  const days = Math.floor(hours / 24)
-  if (days < 7) return `${days} day${days > 1 ? 's' : ''} ago`
-
-  return `${Math.floor(days / 7)} week${days >= 14 ? 's' : ''} ago`
-}
 
 /** Icon colors for the job-title avatar, cycled per row. */
 const AVATAR_COLORS = [
@@ -108,7 +91,7 @@ const ApplicationsTable = ({ applications }: ApplicationsTableProps) => {
                   <td className={tdClass}>
                     <span className={mobileLabelClass}>Applied</span>
                     <span className='min-w-0 whitespace-nowrap text-zinc-400'>
-                      {timeAgo(application.appliedAt)}
+                      {formatRelativeTime(application.appliedAt)}
                     </span>
                   </td>
 

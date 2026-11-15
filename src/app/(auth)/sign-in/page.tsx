@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState, type FormEvent } from 'react'
+import { Suspense, useState, type FormEvent } from 'react'
 import { ArrowRight, LoaderCircle, LockKeyhole, Mail } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -22,7 +22,29 @@ type SignInFields = {
 
 type SignInErrors = Partial<Record<keyof SignInFields, string>>
 
-export default function SignInPage() {
+const AUTH_CARD_PROPS = {
+  title: 'Welcome Back',
+  subtitle: 'Sign in to your HireLoop account and continue your journey.',
+  maxWidth: 'max-w-md',
+  footerText: "Don't have an account?",
+  footerLinkHref: '/sign-up',
+  footerLinkText: 'Create Account',
+}
+
+/** Shell shown while the form waits for the search params to resolve. */
+function SignInFallback() {
+  return (
+    <AuthCard {...AUTH_CARD_PROPS}>
+      <div className='space-y-5'>
+        <div className='h-11 animate-pulse rounded-lg bg-muted' />
+        <div className='h-11 animate-pulse rounded-lg bg-muted' />
+        <div className='h-11 animate-pulse rounded-lg bg-muted' />
+      </div>
+    </AuthCard>
+  )
+}
+
+function SignInForm() {
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -71,14 +93,7 @@ export default function SignInPage() {
   }
 
   return (
-    <AuthCard
-      title='Welcome Back'
-      subtitle='Sign in to your HireLoop account and continue your journey.'
-      maxWidth='max-w-md'
-      footerText="Don't have an account?"
-      footerLinkHref='/sign-up'
-      footerLinkText='Create Account'
-    >
+    <AuthCard {...AUTH_CARD_PROPS}>
       <form onSubmit={handleSubmit} noValidate>
         <div className='space-y-5'>
           <div className='space-y-2'>
@@ -185,5 +200,13 @@ export default function SignInPage() {
         </Button>
       </form>
     </AuthCard>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<SignInFallback />}>
+      <SignInForm />
+    </Suspense>
   )
 }

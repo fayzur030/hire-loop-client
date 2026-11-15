@@ -1,5 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL
-export const checkoutVerify = async (sessionId) => {
+export const checkoutVerify = async (sessionId: string) => {
   const res = await fetch(`${BASE_URL}/payments/checkout-verify`, {
     method: 'POST',
     headers: {

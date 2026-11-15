@@ -17,13 +17,21 @@ export interface ApplyJobPayload {
 /** A stored application as returned by the API. */
 export interface JobApplication extends ApplyJobPayload {
   _id: string
-  status: ApplicationStatus
+  /** Optional: only present once a status has been persisted for the application. */
+  status?: ApplicationStatus
   /** ISO date string of when the seeker applied. */
   appliedAt: string
   isArchived?: boolean
   /** Extra fields shown in the "My Applications" table. */
   jobType?: string
   workMode?: string
+  /** Name of the applicant, when the API resolves it. */
+  applicantName?: string
+}
+
+/** Body sent when a recruiter moves an application to another status. */
+export interface UpdateApplicationStatusPayload {
+  status: ApplicationStatus
 }
 
 export type AppliedJobsCountResponse = {

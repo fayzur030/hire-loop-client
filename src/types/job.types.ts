@@ -34,4 +34,4 @@ export interface Job extends JobFormData {
 }
 
 /** Fields sent when updating an existing job (the `_id` goes in the URL). */
-export type UpdateJobPayload = Omit<JobFormData, '_id'>
+export type UpdateJobPayload = Omit<JobFormData, '_id' | 'reciterId'>

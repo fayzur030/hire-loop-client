@@ -8,7 +8,6 @@ import {
   // WORK_TYPE_OPTIONS,
   buildCategoryOptions,
 } from '@/components/browse-jobs/filters'
-reciterId
 
 const BrowseJob = async ({
   searchParams,
