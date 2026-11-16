@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from 'react'
 import { DownloadIcon } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { updateUserRole } from '@/lib/actions/users'
 import type { ManagedUser, UserRole } from '@/types/user.types'
 
 import { UserRoleFilter } from './UserRoleFilter'
@@ -35,6 +37,8 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
     key: 'joined',
     direction: 'desc',
   })
+  /** Id of the user whose role is being saved, if any. */
+  const [pendingUserId, setPendingUserId] = useState<string | null>(null)
 
   /** Rows after the search box, the role filter and the sort are applied. */
   const visibleUsers = useMemo(
@@ -43,15 +47,28 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   )
 
   /**
-   * Changes the role of a user.
-   * TODO: save the new role with the admin API once it is ready.
+   * Changes the role of a user and saves it with the API.
+   * The row only updates once the API confirmed the new role.
    */
-  const handleRoleChange = (userId: string, role: UserRole) => {
-    setUsers((currentUsers) =>
-      currentUsers.map((user) =>
-        user.id === userId ? { ...user, role } : user
+  const handleRoleChange = async (userId: string, role: UserRole) => {
+    setPendingUserId(userId)
+
+    try {
+      await updateUserRole(userId, role)
+
+      setUsers((currentUsers) =>
+        currentUsers.map((user) =>
+          user.id === userId ? { ...user, role } : user
+        )
       )
-    )
+
+      toast.success('Role updated')
+    } catch (error) {
+      console.error('Failed to update the role:', error)
+      toast.error('Failed to update the role')
+    } finally {
+      setPendingUserId(null)
+    }
   }
 
   /**
@@ -122,6 +139,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
         onSortChange={handleSortChange}
         onRoleChange={handleRoleChange}
         onToggleStatus={handleToggleStatus}
+        pendingUserId={pendingUserId}
       />
     </div>
   )

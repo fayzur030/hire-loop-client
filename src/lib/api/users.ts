@@ -18,6 +18,24 @@ export const getUsers = async () => {
   return users
 }
 
+// user update role
+export const updateUserRole = async (
+  userId: string,
+  role: 'seeker' | 'require' | 'admin'
+) => {
+  const res = await fetch(`${BASE_URL}/users/${userId}/role`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ role }),
+  })
+  if (!res.ok) {
+    throw new Error('Failed to update role')
+  }
+  return res.json()
+}
+
 /**
  * Users for the admin "User management" table.
  * Falls back to the sample rows when the admin API is not reachable.
@@ -36,7 +54,10 @@ export const getManagedUsers = async (): Promise<ManagedUser[]> => {
       joinedAt: new Date(user.createdAt).toISOString(),
     }))
   } catch (error) {
-    console.error('Could not load the users, showing sample data instead.', error)
+    console.error(
+      'Could not load the users, showing sample data instead.',
+      error
+    )
     return MOCK_USERS
   }
 }

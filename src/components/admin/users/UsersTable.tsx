@@ -27,6 +27,8 @@ interface UsersTableProps {
   onRoleChange: (userId: string, role: UserRole) => void
   /** Called with the user id when the account is suspended or activated. */
   onToggleStatus: (userId: string) => void
+  /** Id of the user whose role is being saved, if any. */
+  pendingUserId?: string | null
 }
 
 /** Table of every platform user with the role and status actions. */
@@ -36,6 +38,7 @@ export function UsersTable({
   onSortChange,
   onRoleChange,
   onToggleStatus,
+  pendingUserId = null,
 }: UsersTableProps) {
   return (
     <section className='overflow-hidden rounded-2xl border border-[#27272A] bg-[#111113] shadow-sm'>
@@ -90,82 +93,88 @@ export function UsersTable({
               </tr>
             ) : null}
 
-            {users.map((user, index) => (
-              <tr
-                key={user.id}
-                className='border-b border-[#27272A]/60 transition-colors last:border-b-0 hover:bg-[#18181B]/60'
-              >
-                {/* Order */}
-                <td className={tdClass}>
-                  <span className='text-xs font-medium text-zinc-500'>
-                    {index + 1}
-                  </span>
-                </td>
+            {users.map((user, index) => {
+              const isPending = pendingUserId === user.id
 
-                {/* User name */}
-                <td className={tdClass}>
-                  <div className='flex items-center gap-3'>
-                    <Avatar className='size-9'>
-                      {user.image ? (
-                        <AvatarImage src={user.image} alt={user.name} />
-                      ) : null}
-                      <AvatarFallback>
-                        {user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+              return (
+                <tr
+                  key={user.id}
+                  className='border-b border-[#27272A]/60 transition-colors last:border-b-0 hover:bg-[#18181B]/60'
+                >
+                  {/* Order */}
+                  <td className={tdClass}>
+                    <span className='text-xs font-medium text-zinc-500'>
+                      {index + 1}
+                    </span>
+                  </td>
 
-                    <span className='font-medium text-white'>{user.name}</span>
-                  </div>
-                </td>
+                  {/* User name */}
+                  <td className={tdClass}>
+                    <div className='flex items-center gap-3'>
+                      <Avatar className='size-9'>
+                        {user.image ? (
+                          <AvatarImage src={user.image} alt={user.name} />
+                        ) : null}
+                        <AvatarFallback>
+                          {user.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
 
-                {/* Email address */}
-                <td className={tdClass}>
-                  <span className='text-zinc-300'>{user.email}</span>
-                </td>
+                      <span className='font-medium text-white'>{user.name}</span>
+                    </div>
+                  </td>
 
-                {/* Role */}
-                <td className={tdClass}>
-                  <UserRoleBadge role={user.role} />
-                </td>
+                  {/* Email address */}
+                  <td className={tdClass}>
+                    <span className='text-zinc-300'>{user.email}</span>
+                  </td>
 
-                {/* Join date */}
-                <td className={tdClass}>
-                  <span className='text-zinc-300'>
-                    {formatDate(user.joinedAt)}
-                  </span>
-                </td>
+                  {/* Role */}
+                  <td className={tdClass}>
+                    <UserRoleBadge role={user.role} />
+                  </td>
 
-                {/* Status */}
-                <td className={tdClass}>
-                  <UserStatusBadge status={user.status} />
-                </td>
+                  {/* Join date */}
+                  <td className={tdClass}>
+                    <span className='text-zinc-300'>
+                      {formatDate(user.joinedAt)}
+                    </span>
+                  </td>
 
-                {/* Actions */}
-                <td className={`${tdClass} pr-6`}>
-                  <div className='flex items-center justify-end gap-2'>
-                    <UserRoleMenu
-                      userId={user.id}
-                      role={user.role}
-                      onRoleChange={onRoleChange}
-                    />
+                  {/* Status */}
+                  <td className={tdClass}>
+                    <UserStatusBadge status={user.status} />
+                  </td>
 
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
-                      onClick={() => onToggleStatus(user.id)}
-                      className={
-                        user.status === 'active'
-                          ? 'h-8 rounded-lg px-2.5 text-xs font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300'
-                          : 'h-8 rounded-lg px-2.5 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300'
-                      }
-                    >
-                      {user.status === 'active' ? 'Suspend' : 'Activate'}
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  {/* Actions */}
+                  <td className={`${tdClass} pr-6`}>
+                    <div className='flex items-center justify-end gap-2'>
+                      <UserRoleMenu
+                        userId={user.id}
+                        role={user.role}
+                        onRoleChange={onRoleChange}
+                        pending={isPending}
+                      />
+
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        size='sm'
+                        disabled={isPending}
+                        onClick={() => onToggleStatus(user.id)}
+                        className={
+                          user.status === 'active'
+                            ? 'h-8 rounded-lg px-2.5 text-xs font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300'
+                            : 'h-8 rounded-lg px-2.5 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300'
+                        }
+                      >
+                        {user.status === 'active' ? 'Suspend' : 'Activate'}
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
