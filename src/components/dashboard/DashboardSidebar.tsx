@@ -66,7 +66,7 @@ const menuItemsByRole: Record<UserRole, MenuItem[]> = {
   ],
   admin: [
     { name: 'Dashboard', icon: LayoutDashboard, url: '/dashboard/admin' },
-    { name: 'Users', icon: Users, url: '/users' },
+    { name: 'Users', icon: Users, url: '/dashboard/admin/users' },
     { name: 'Companies', icon: Building2, url: '/companies' },
     { name: 'Jobs', icon: BriefcaseBusiness, url: '/jobs' },
     { name: 'Payments', icon: CreditCard, url: '/payments' },
