@@ -1,5 +1,8 @@
 import { headers } from 'next/headers'
 import { auth } from '../auth'
+import { MOCK_USERS } from '@/constants/mockUsers'
+import { normalizeUserRole } from '@/constants/userRoles'
+import type { ManagedUser } from '@/types/user.types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -13,6 +16,29 @@ export const getUsers = async () => {
     headers: await headers(),
   })
   return users
+}
+
+/**
+ * Users for the admin "User management" table.
+ * Falls back to the sample rows when the admin API is not reachable.
+ */
+export const getManagedUsers = async (): Promise<ManagedUser[]> => {
+  try {
+    const { users } = await getUsers()
+
+    return users.map((user) => ({
+      id: user.id,
+      name: user.name || user.email.split('@')[0],
+      email: user.email,
+      image: user.image ?? null,
+      role: normalizeUserRole(user.role),
+      status: user.banned ? 'suspended' : 'active',
+      joinedAt: new Date(user.createdAt).toISOString(),
+    }))
+  } catch (error) {
+    console.error('Could not load the users, showing sample data instead.', error)
+    return MOCK_USERS
+  }
 }
 
 export const getUserPremiumById = async (userId: string) => {

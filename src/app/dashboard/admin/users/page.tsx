@@ -1,10 +1,10 @@
-import { getUsers } from '@/lib/api/users'
-import React from 'react'
+import { UsersManager } from '@/components/admin/users/UsersManager'
+import { getManagedUsers } from '@/lib/api/users'
 
 const AdminUserPage = async () => {
-  const users = await getUsers()
-  console.log(users)
-  return <div>all users</div>
+  const users = await getManagedUsers()
+
+  return <UsersManager initialUsers={users} />
 }
 
 export default AdminUserPage
