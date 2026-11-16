@@ -6,7 +6,6 @@ import {
   Building2,
   Check,
   LoaderCircle,
-  ShieldCheck,
   UserRound,
   type LucideIcon,
 } from 'lucide-react'
@@ -57,12 +56,6 @@ const ROLES: {
     title: 'Recruiter',
     description: 'Find talented people and hire the right candidates.',
     Icon: Building2,
-  },
-  {
-    value: 'admin',
-    title: 'Admin',
-    description: 'Manage users, monitor activities, and maintain the platform.',
-    Icon: ShieldCheck,
   },
 ]
 
@@ -163,9 +156,7 @@ export default function SignUpPage() {
                     <Icon className='size-4.5' />
                   </span>
                   <span className='min-w-0'>
-                    <span className='block text-sm font-medium'>
-                      {title}
-                    </span>
+                    <span className='block text-sm font-medium'>{title}</span>
                     <span className='mt-1 block text-xs leading-[1.55] text-muted-foreground'>
                       {description}
                     </span>
@@ -192,13 +183,9 @@ export default function SignUpPage() {
               autoComplete='name'
               placeholder='Your name'
               value={fields.fullName}
-              onChange={(event) =>
-                updateField('fullName', event.target.value)
-              }
+              onChange={(event) => updateField('fullName', event.target.value)}
               aria-invalid={Boolean(errors.fullName)}
-              aria-describedby={
-                errors.fullName ? 'fullName-error' : undefined
-              }
+              aria-describedby={errors.fullName ? 'fullName-error' : undefined}
               className='h-10 border-input bg-background/60 px-3 text-sm placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-primary/20'
             />
             {errors.fullName && (
@@ -241,13 +228,9 @@ export default function SignUpPage() {
               autoComplete='new-password'
               placeholder='Create a password'
               value={fields.password}
-              onChange={(event) =>
-                updateField('password', event.target.value)
-              }
+              onChange={(event) => updateField('password', event.target.value)}
               isInvalid={Boolean(errors.password)}
-              describedById={
-                errors.password ? 'password-error' : undefined
-              }
+              describedById={errors.password ? 'password-error' : undefined}
               className='h-10 border-input bg-background/60 px-3 pr-10 text-sm placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-primary/20'
               toggleClassName='absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground'
             />
@@ -276,9 +259,7 @@ export default function SignUpPage() {
               }
               isInvalid={Boolean(errors.confirmPassword)}
               describedById={
-                errors.confirmPassword
-                  ? 'confirmPassword-error'
-                  : undefined
+                errors.confirmPassword ? 'confirmPassword-error' : undefined
               }
               className='h-10 border-input bg-background/60 px-3 pr-10 text-sm placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-primary/20'
               toggleClassName='absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground'
